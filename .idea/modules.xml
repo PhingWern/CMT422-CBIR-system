@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CMT442_CBIR_System.iml" filepath="$PROJECT_DIR$/CMT442_CBIR_System.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CMT422_CBIR_System.iml" filepath="$PROJECT_DIR$/CMT422_CBIR_System.iml" />
     </modules>
   </component>
 </project>

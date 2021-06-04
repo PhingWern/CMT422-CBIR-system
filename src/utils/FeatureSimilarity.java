@@ -151,6 +151,7 @@ public class FeatureSimilarity {
 
     /**
      * Sort a {@code Map} instance by value and return {@code SortedSet} instance
+     *
      * @param map a Map instance with image file path as key and distance/score as value
      * @param <K> Class of key
      * @param <V> Class of value

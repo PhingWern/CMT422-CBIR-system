@@ -72,6 +72,9 @@ public class FeatureSimilarity {
 
 
     /**
+     * Process the index by comparing the indexed images to the query image.
+     * Determine {@code maxImg} similar images.
+     *
      * @param indexReader an IndexReader instance referring to the image index.
      * @param lireFeature an LireFeature instance containing the feature vector of query image.
      * @return the maximum distance found for normalizing.

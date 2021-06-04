@@ -118,6 +118,7 @@ public class FeatureSimilarity {
 
     /**
      * Similarity method to find the distance between document in the index and feature vector of query image.
+     *
      * @param document a Document instance representing an indexed image.
      * @param lireFeature an LireFeature instance containing the feature vector of query image.
      * @return the distance between the given feature and the feature stored in the document.

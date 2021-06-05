@@ -8,14 +8,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import net.semanticmetadata.lire.imageanalysis.features.global.OpponentHistogram;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.store.FSDirectory;
 import utils.FeatureSimilarity;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.SortedSet;
+
 
 public class SearchScene {
     String indexPath = "D:\\Documents\\blablabla\\index";

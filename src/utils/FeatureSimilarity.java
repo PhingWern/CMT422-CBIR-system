@@ -72,6 +72,57 @@ public class FeatureSimilarity {
 
 
     /**
+     * Return a hash map of similar images of size {@code numOfImages}, compared with the feature {@code globalFeature},
+     * based on the {@code docId}-th document (in the image index) to query and IndexReader {@code indexReader} provided.
+     *
+     * @param numOfImages number of similar images returned
+     * @param globalFeature GlobalFeature class to compare with (e.g. ACCID.class)
+     * @param docId index/position of document in the image index created
+     * @param indexReader an IndexReader instance referring to the image index.
+     * @return a hash map of similar images with fileName as key and score as value.
+     * @throws Exception Exception will be thrown if the feature provided is not supported.
+     */
+    public SortedSet<Map.Entry<String, Double>> findSimilarImagesByDoc(int numOfImages, Class<? extends GlobalFeature> globalFeature,
+                                                                  int docId, IndexReader indexReader) throws Exception {
+        Map<String, Double> listOfImagePaths = new HashMap<>();
+
+        this.extractorItem = new ExtractorItem(globalFeature);
+        this.fieldName = extractorItem.getFieldName();
+        this.cachedInstance = (GlobalFeature) extractorItem.getExtractorInstance().getClass().newInstance();
+
+        if (extractorItem.isGlobal() && (cachedInstance instanceof ACCID || cachedInstance instanceof Tamura ||
+                cachedInstance instanceof PHOG || cachedInstance instanceof OpponentHistogram)) {
+            Document queryDoc = indexReader.document(docId); // Get the query document
+
+            // Check if the feature has been indexed.
+            if (queryDoc.getField(fieldName).binaryValue() != null && queryDoc.getField(fieldName).binaryValue().length > 0) {
+                // Get the related feature vector of the query document
+                GlobalFeature queryGlobalFeature = (GlobalFeature) extractorItem.getExtractorInstance().getClass().newInstance();
+                queryGlobalFeature.setByteArrayRepresentation(queryDoc.getField(fieldName).binaryValue().bytes,
+                        queryDoc.getField(fieldName).binaryValue().offset, queryDoc.getField(fieldName).binaryValue().length);
+
+                // Find similar images and return the maximum distance between query and result.
+                double maxDistance = findSimilar(indexReader, queryGlobalFeature, numOfImages);
+                ImageSearchHits searchHits = new SimpleImageSearchHits(this.similarDocs, maxDistance);
+
+                for (int i = 0; i < searchHits.length(); i++) {
+                    String fileName = indexReader.document(searchHits.documentID(i)).getValues(DocumentBuilder.FIELD_NAME_IDENTIFIER)[0];
+                    listOfImagePaths.put(fileName, searchHits.score(i));
+                }
+
+            } else {
+                throw new Exception("Feature to compare must be either ACCID, TAMURA, PHOG or OppHist.");
+            }
+
+        } else {
+            throw new Exception("Feature to compare must be either ACCID, TAMURA, PHOG or OppHist.");
+        }
+
+        return entriesSortedByValues(listOfImagePaths); // Already sorted in the ascending order of score (aka distance).
+    }
+
+
+    /**
      * Process the index by comparing the indexed images to the query image.
      * Determine {@code maxImg} similar images.
      *

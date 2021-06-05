@@ -20,6 +20,7 @@ import java.util.SortedSet;
 public class BrowseScene {
     String indexPath = "D:\\Documents\\blablabla\\index";
     IndexReader ir;
+    int numOfImagesReturned = 10;
 
     @FXML
     Button mainMenuBTN;
@@ -45,15 +46,15 @@ public class BrowseScene {
 
     @FXML
     private void onClickSearch(ActionEvent actionEvent) throws Exception {
-        // Determine a document index (from 0 to n-1)
+        // *** Determine a document index (from 0 to n-1)
         int docId = 0;
 
         FeatureSimilarity fs = new FeatureSimilarity();
         // Parameters for findSimilarImages: num of similar images to return, type of feature, document index to query, IndexReader obj
-        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(15, OpponentHistogram.class, docId, ir);
-//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(15, PHOG.class, docId, ir);
-//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(15, ACCID.class, docId, ir);
-//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(15, Tamura.class, docId, ir);
+        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, OpponentHistogram.class, docId, ir);
+//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, PHOG.class, docId, ir);
+//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, ACCID.class, docId, ir);
+//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, Tamura.class, docId, ir);
 
         // TODO: Display all images to GUI.
         // Display all the paths of similar images and their distance with the query image (sorted in asc)

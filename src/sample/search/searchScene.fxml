@@ -188,9 +188,9 @@
                                     </VBox>
                                  </children>
                               </AnchorPane>
-                              <ScrollPane fx:id="imageOutputPane" fitToWidth="true" hbarPolicy="NEVER" minWidth="-Infinity" prefHeight="200.0" prefWidth="708.0" style="-fx-border-color: red;">
+                              <ScrollPane fx:id="imageOutputPane" fitToWidth="true" hbarPolicy="NEVER" minWidth="-Infinity" prefHeight="200.0" prefWidth="708.0">
                                 <content>
-                                  <AnchorPane maxHeight="1.7976931348623157E308" prefHeight="629.0" prefWidth="706.0" style="-fx-background-color: blue;" />
+                                  <AnchorPane maxHeight="1.7976931348623157E308" prefHeight="629.0" prefWidth="706.0" />
                                 </content>
                               </ScrollPane>
                            </items>

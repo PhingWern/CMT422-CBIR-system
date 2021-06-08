@@ -27,8 +27,10 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.FSDirectory;
 import utils.FeatureSimilarity;
+import utils.ImageQuery;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -127,18 +129,13 @@ public class BrowseScene {
     private void displayImage(int docId) throws IOException {
         // TODO: search doc by id and display image
         try {
-            /*Document d = ir.document(docId);
-            BufferedImage img = null;
-            String file = d.getField(DocumentBuilder.FIELD_NAME_IDENTIFIER).stringValue();
-            if (!file.startsWith("http:")) {
-                img = ImageIO.read(new java.io.FileInputStream(file));
-            } else {
-                img = ImageIO.read(new URL(file));
-            }
+            //TODO: Dunno can work or not, need to be test after indexing module is implemented
+            //search image by doc Id
+            ImageQuery iq = new ImageQuery();
 
             ImageBrowsed.fitHeightProperty().bind(browseGrid.heightProperty().multiply(0.9));
             ImageBrowsed.fitWidthProperty().bind(browseGrid.widthProperty());
-            ImageBrowsed.setImage(SwingFXUtils.toFXImage(img, null));*/
+            ImageBrowsed.setImage(iq.findImageByDocId(ir, docId));
 
         } catch (Exception e) {
             System.err.println(e.toString());

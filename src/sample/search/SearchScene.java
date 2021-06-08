@@ -14,7 +14,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import net.semanticmetadata.lire.imageanalysis.features.global.ACCID;
 import net.semanticmetadata.lire.imageanalysis.features.global.OpponentHistogram;
+import net.semanticmetadata.lire.imageanalysis.features.global.PHOG;
+import net.semanticmetadata.lire.imageanalysis.features.global.Tamura;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.FSDirectory;
@@ -38,8 +41,8 @@ public class SearchScene {
 
     //initialize the required value
     int numOfImagesReturned = 9;
-    String indexSearcherType = "Opponent Histogram";
-    String rankingType = "Opponent Histogram";
+    //String indexSearcherType = "Opponent Histogram";
+    //String rankingType = "Opponent Histogram";
 
     //variables used for display image in gridpane
     int currentRow = 0;
@@ -100,7 +103,7 @@ public class SearchScene {
 
         //define the default index searcher
         indexSearchChoice.getSelectionModel().select(0);
-        indexSearcherType = "Opponent Histogram";
+        //indexSearcherType = "Opponent Histogram";
 
         //initialize the choice box for ranking features
         rankingChoice.getItems().add(0, "Opponent Histogram");
@@ -110,7 +113,7 @@ public class SearchScene {
 
         //define the default value of ranking features
         rankingChoice.getSelectionModel().select(0);
-        rankingType = "Opponent Histogram";
+        //rankingType = "Opponent Histogram";
 
         //initialize the spinner to provide choices in the range of 1 - 30
         numberOfImageSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,30));
@@ -156,12 +159,7 @@ public class SearchScene {
         }
 
         //perform matcing
-        FeatureSimilarity fs = new FeatureSimilarity();
-        // Parameters for findSimilarImages: num of similar images to return, type of feature, BufferedImage obj (represent query image), IndexReader obj
-        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImages(numOfImagesReturned, OpponentHistogram.class, img, ir);
-//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImages(numOfImagesReturned, PHOG.class, img, ir);
-//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImages(numOfImagesReturned, ACCID.class, img, ir);
-//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImages(numOfImagesReturned, Tamura.class, img, ir);
+        SortedSet<Map.Entry<String, Double>> similarImages = getSimilarImages(img);
 
         //declare the GridPane and do some configurations
         GridPane imageGrid = createGrid();
@@ -226,12 +224,12 @@ public class SearchScene {
      * @param actionEvent
      * @throws Exception
      */
-    @FXML
+    /*@FXML
     private void onClickApply(ActionEvent actionEvent) throws Exception {
         numOfImagesReturned = numberOfImageSpinner.getValue();
         indexSearcherType = indexSearchChoice.getSelectionModel().getSelectedItem();
         rankingType = rankingChoice.getSelectionModel().getSelectedItem();
-    }
+    }*/
 
     /**
      * to reset the settings
@@ -290,6 +288,28 @@ public class SearchScene {
         pictureRegion.getChildren().add(imgView);
 
         return pictureRegion;
+    }
+
+    /**
+     * perform matching using selected index searcher
+     * @param img
+     * @return a sorted set contains entries of filepath and distance
+     * @throws Exception
+     */
+    private SortedSet<Map.Entry<String, Double>> getSimilarImages(BufferedImage img) throws Exception {
+
+        // Parameters for findSimilarImages: num of similar images to return, type of feature, BufferedImage obj (represent query image), IndexReader obj
+        FeatureSimilarity fs = new FeatureSimilarity();
+
+        if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 0)
+            return fs.findSimilarImages(numOfImagesReturned, OpponentHistogram.class, img, ir);
+        else if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 1)
+            return fs.findSimilarImages(numOfImagesReturned, PHOG.class, img, ir);
+        else if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 2)
+            return fs.findSimilarImages(numOfImagesReturned, ACCID.class, img, ir);
+        else// if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 3)
+            return fs.findSimilarImages(numOfImagesReturned, Tamura.class, img, ir);
+
     }
 
 }

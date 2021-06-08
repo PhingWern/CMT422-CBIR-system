@@ -135,7 +135,6 @@
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Button fx:id="applyBTN" mnemonicParsing="false" onAction="#onClickApply" prefHeight="27.0" prefWidth="113.0" text="Apply" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
                                                                   <Button fx:id="resetBTN" mnemonicParsing="false" onAction="#onClickReset" prefHeight="52.0" prefWidth="113.0" text="Reset" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
                                                                   <ChoiceBox fx:id="indexSearchChoice" prefHeight="27.0" prefWidth="241.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                                                      <GridPane.margin>

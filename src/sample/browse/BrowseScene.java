@@ -4,43 +4,27 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import net.semanticmetadata.lire.builders.DocumentBuilder;
-import net.semanticmetadata.lire.imageanalysis.features.global.ACCID;
-import net.semanticmetadata.lire.imageanalysis.features.global.OpponentHistogram;
-import net.semanticmetadata.lire.imageanalysis.features.global.PHOG;
-import net.semanticmetadata.lire.imageanalysis.features.global.Tamura;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.store.FSDirectory;
-import utils.FeatureSimilarity;
-import utils.ImageQuery;
+import sample.search.SearchScene;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Paths;
-import java.util.Map;
-import java.util.SortedSet;
 
 public class BrowseScene {
-    String indexPath = "D:\\Documents\\blablabla\\index";
+    //String indexPath = "D:\\Documents\\blablabla\\index";
     IndexReader ir;
     int numOfImagesReturned = 1;
 
@@ -87,9 +71,25 @@ public class BrowseScene {
 
         // TODO: implement change scene from browse to search
         // *** Determine a document index (from 0 to n-1)
-        int docId = 0;
+        //int docId = 0;
+        int docId = ((Integer) docIdSpinner.getValue()).intValue() - 1;
 
-        FeatureSimilarity fs = new FeatureSimilarity();
+        //Load second scene
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../search/searchScene.fxml"));
+        Parent root = loader.load();
+
+        //Get controller of scene2
+        SearchScene searchController = loader.getController();
+        //Pass to search
+        searchController.setImageId(docId);
+
+        //Show search scene in new window
+        Stage currentStage = (Stage) mainMenuBTN.getScene().getWindow();
+        currentStage.setTitle("CMT422 - CBIR System/Search");
+        currentStage.setScene(new Scene(root));
+        currentStage.show();
+
+        /*FeatureSimilarity fs = new FeatureSimilarity();
         // Parameters for findSimilarImages: num of similar images to return, type of feature, document index to query, IndexReader obj
         SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, OpponentHistogram.class, docId, ir);
 //        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, PHOG.class, docId, ir);
@@ -102,7 +102,7 @@ public class BrowseScene {
             System.out.println("Image File Path: " + entry.getKey() + "; Distance: " + entry.getValue());
 
 
-        });
+        });*/
     }
 
     @FXML
@@ -130,12 +130,20 @@ public class BrowseScene {
         // TODO: search doc by id and display image
         try {
             //TODO: Dunno can work or not, need to be test after indexing module is implemented
-            //search image by doc Id
-            ImageQuery iq = new ImageQuery();
+            Document d = ir.document(docId);
+            BufferedImage img = null;
+            String file = d.getField(DocumentBuilder.FIELD_NAME_IDENTIFIER).stringValue();
+            if (!file.startsWith("http:")) {
+                img = ImageIO.read(new java.io.FileInputStream(file));
+            } else {
+                img = ImageIO.read(new URL(file));
+            }
+
+            WritableImage i = SwingFXUtils.toFXImage(img, null);
 
             ImageBrowsed.fitHeightProperty().bind(browseGrid.heightProperty().multiply(0.9));
             ImageBrowsed.fitWidthProperty().bind(browseGrid.widthProperty());
-            ImageBrowsed.setImage(iq.findImageByDocId(ir, docId));
+            ImageBrowsed.setImage(i);
 
         } catch (Exception e) {
             System.err.println(e.toString());

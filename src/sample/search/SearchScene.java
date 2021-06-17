@@ -48,6 +48,9 @@ public class SearchScene {
     int currentRow = 0;
     int currentCol = 0;
 
+    //image id - search by doc
+    int docId = -1;
+
     /*************
      *   main menu
      * ************/
@@ -83,10 +86,16 @@ public class SearchScene {
 
 
     /*******************
+     *   constructor
+     * *****************/
+
+
+
+    /*******************
      *   functions
      * *****************/
     @FXML
-    public void initialize() {
+    public void initialize(){
 
         // TODO: Should comment out
         /*try {
@@ -119,6 +128,15 @@ public class SearchScene {
         numberOfImageSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,30));
         //define the default number of images returned
         numberOfImageSpinner.getValueFactory().setValue(numOfImagesReturned);
+
+    }
+
+    public void setImageId(int docId) throws Exception {
+        this.docId = docId;
+        System.out.println(this.docId);
+        //perform matching
+        SortedSet<Map.Entry<String, Double>> similarImages = getSimilarImages(docId);
+        displayImageInGrid(similarImages);
     }
 
     /**
@@ -160,37 +178,7 @@ public class SearchScene {
 
         //perform matcing
         SortedSet<Map.Entry<String, Double>> similarImages = getSimilarImages(img);
-
-        //declare the GridPane and do some configurations
-        GridPane imageGrid = createGrid();
-        //for display in grid pane
-        currentRow = 0;
-        currentCol = 0;
-
-        // Display all images to GUI.
-        // Display all the paths of similar images and their distance with the query image (sorted in asc)
-        similarImages.forEach((entry) -> {
-            System.out.println("Image File Path: " + entry.getKey() + "; Distance: " + entry.getValue());
-
-            try {
-
-                //add image node to the grid pane
-                imageGrid.addRow(currentRow, createImageNode(entry.getKey()));
-
-                currentCol++;
-                if(currentCol % 3 == 0){
-                    currentRow++;
-                    currentCol = 0;
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        });
-
-        //append the image grid to the output pane
-        imageOutputPane.setContent(imageGrid);
+        displayImageInGrid(similarImages);
 
     }
 
@@ -218,18 +206,6 @@ public class SearchScene {
             searchBTN.setDisable(false);
         }
     }
-
-    /**
-     * to apply the changes in settings
-     * @param actionEvent
-     * @throws Exception
-     */
-    /*@FXML
-    private void onClickApply(ActionEvent actionEvent) throws Exception {
-        numOfImagesReturned = numberOfImageSpinner.getValue();
-        indexSearcherType = indexSearchChoice.getSelectionModel().getSelectedItem();
-        rankingType = rankingChoice.getSelectionModel().getSelectedItem();
-    }*/
 
     /**
      * to reset the settings
@@ -310,6 +286,60 @@ public class SearchScene {
         else// if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 3)
             return fs.findSimilarImages(numOfImagesReturned, Tamura.class, img, ir);
 
+    }
+
+    /**
+     * perform matching using selected index searcher
+     * @param docId
+     * @return a sorted set contains entries of filepath and distance
+     * @throws Exception
+     */
+    private SortedSet<Map.Entry<String, Double>> getSimilarImages(int docId) throws Exception {
+
+        // Parameters for findSimilarImages: num of similar images to return, type of feature, BufferedImage obj (represent query image), IndexReader obj
+        FeatureSimilarity fs = new FeatureSimilarity();
+
+        if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 0)
+            return fs.findSimilarImagesByDoc(numOfImagesReturned, OpponentHistogram.class, docId, ir);
+        else if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 1)
+            return fs.findSimilarImagesByDoc(numOfImagesReturned, PHOG.class, docId, ir);
+        else if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 2)
+            return fs.findSimilarImagesByDoc(numOfImagesReturned, ACCID.class, docId, ir);
+        else// if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 3)
+            return fs.findSimilarImagesByDoc(numOfImagesReturned, Tamura.class, docId, ir);
+
+    }
+    private void displayImageInGrid(SortedSet<Map.Entry<String, Double>> similarImages){
+        //declare the GridPane and do some configurations
+        GridPane imageGrid = createGrid();
+        //for display in grid pane
+        currentRow = 0;
+        currentCol = 0;
+
+        // Display all images to GUI.
+        // Display all the paths of similar images and their distance with the query image (sorted in asc)
+        similarImages.forEach((entry) -> {
+            System.out.println("Image File Path: " + entry.getKey() + "; Distance: " + entry.getValue());
+
+            try {
+
+                //add image node to the grid pane
+                imageGrid.addRow(currentRow, createImageNode(entry.getKey()));
+
+                currentCol++;
+                if(currentCol % 3 == 0){
+                    currentRow++;
+                    currentCol = 0;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        });
+
+        //append the image grid to the output pane
+        imageOutputPane.setContent(imageGrid);
     }
 
 }

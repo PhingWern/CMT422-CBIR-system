@@ -73,7 +73,7 @@ public class SearchScene {
     private Button applyBTN, resetBTN;
 
     @FXML
-    private ChoiceBox<String> indexSearchChoice, rankingChoice;
+    private ChoiceBox<String> indexSearchChoice; // rankingChoice
 
     @FXML
     private Spinner<Integer> numberOfImageSpinner;
@@ -114,21 +114,26 @@ public class SearchScene {
         indexSearchChoice.getSelectionModel().select(0);
         //indexSearcherType = "Opponent Histogram";
 
-        //initialize the choice box for ranking features
-        rankingChoice.getItems().add(0, "Opponent Histogram");
-        rankingChoice.getItems().add(1, "PHOG");
-        rankingChoice.getItems().add(2, "ACCID");
-        rankingChoice.getItems().add(3, "Tamura");
-
-        //define the default value of ranking features
-        rankingChoice.getSelectionModel().select(0);
-        //rankingType = "Opponent Histogram";
+//        //initialize the choice box for ranking features
+//        rankingChoice.getItems().add(0, "Opponent Histogram");
+//        rankingChoice.getItems().add(1, "PHOG");
+//        rankingChoice.getItems().add(2, "ACCID");
+//        rankingChoice.getItems().add(3, "Tamura");
+//
+//        //define the default value of ranking features
+//        rankingChoice.getSelectionModel().select(0);
+//        //rankingType = "Opponent Histogram";
 
         //initialize the spinner to provide choices in the range of 1 - 30
         numberOfImageSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,30));
         //define the default number of images returned
         numberOfImageSpinner.getValueFactory().setValue(numOfImagesReturned);
 
+        numberOfImageSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            if (!"".equals(newValue)) {
+                numOfImagesReturned = numberOfImageSpinner.getValueFactory().getValue();
+            }
+        });
     }
 
     public void setImageId(int docId) throws Exception {
@@ -176,7 +181,7 @@ public class SearchScene {
             }
         }
 
-        //perform matcing
+        // perform matching
         SortedSet<Map.Entry<String, Double>> similarImages = getSimilarImages(img);
         displayImageInGrid(similarImages);
 
@@ -210,15 +215,19 @@ public class SearchScene {
     /**
      * to reset the settings
      * @param actionEvent
-     * @throws Exception
      */
     @FXML
-    private void onClickReset(ActionEvent actionEvent) throws Exception {
-
-        rankingChoice.getSelectionModel().select(0);
+    private void onClickReset(ActionEvent actionEvent) {
+//        rankingChoice.getSelectionModel().select(0);
         indexSearchChoice.getSelectionModel().select(0);
         numberOfImageSpinner.getValueFactory().setValue(9);
 
+    }
+
+    @FXML
+    private void onNumberOfImageChanged(ActionEvent actionEvent) {
+        numOfImagesReturned = numberOfImageSpinner.getValueFactory().getValue();
+        System.out.println("Hello");
     }
 
     /**
@@ -226,7 +235,6 @@ public class SearchScene {
      * @return a configured GridPane
      */
     private GridPane createGrid(){
-
         GridPane imageGrid = new GridPane();
         imageGrid.setPadding(new Insets(10));
         imageGrid.setGridLinesVisible(true);
@@ -285,7 +293,6 @@ public class SearchScene {
             return fs.findSimilarImages(numOfImagesReturned, ACCID.class, img, ir);
         else// if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 3)
             return fs.findSimilarImages(numOfImagesReturned, Tamura.class, img, ir);
-
     }
 
     /**
@@ -341,5 +348,4 @@ public class SearchScene {
         //append the image grid to the output pane
         imageOutputPane.setContent(imageGrid);
     }
-
 }

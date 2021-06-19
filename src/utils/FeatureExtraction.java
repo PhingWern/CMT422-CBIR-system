@@ -15,28 +15,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class featureExtraction {
+public class FeatureExtraction {
 
-    public static void main(String[] args) throws Exception {
+    public void run(String path) throws Exception {
 //        Checking if the directory is empty
         boolean isAccepted = false;
-        if(args.length>0){
-            File f = new File(args[0]);
+        if(path.length()>0){
+            File f = new File(path);
             if(f.exists() && f.isDirectory())
                 isAccepted=true;
         }
 
         if(!isAccepted){
-            throw new Exception("No directory is given. Indexing cannot undergone");
+            throw new Exception("No directory is given. Indexing cannot undergone.");
         }
 
 //        Get image from directory
-        ArrayList<String> images = FileUtils.readFileLines(new File(args[0]),true);
+        ArrayList<String> images = FileUtils.readFileLines(new File(path),true);
 
 //        create document and store all files
-        GlobalDocumentBuilder globalDocumentBuilder = new GlobalDocumentBuilder(CEDD.class);
+        GlobalDocumentBuilder globalDocumentBuilder = new GlobalDocumentBuilder(ACCID.class);
 //        feature need to extract
-        globalDocumentBuilder.addExtractor(ACCID.class);
+        //globalDocumentBuilder.addExtractor(ACCID.class);
         globalDocumentBuilder.addExtractor(PHOG.class);
         globalDocumentBuilder.addExtractor(Tamura.class);
         globalDocumentBuilder.addExtractor(OpponentHistogram.class);

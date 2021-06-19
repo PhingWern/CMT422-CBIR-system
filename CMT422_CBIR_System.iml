@@ -11,5 +11,6 @@
     <orderEntry type="library" name="lucene-analyzers-common-6.4.0" level="project" />
     <orderEntry type="library" name="lucene-core-6.4.0" level="project" />
     <orderEntry type="library" name="lucene-queryparser-6.4.0" level="project" />
+    <orderEntry type="library" name="commons-io-2.5" level="project" />
   </component>
 </module>

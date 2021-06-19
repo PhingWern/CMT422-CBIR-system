@@ -15,16 +15,19 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import net.semanticmetadata.lire.builders.DocumentBuilder;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.store.FSDirectory;
 import sample.search.SearchScene;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 public class BrowseScene {
-    //String indexPath = "D:\\Documents\\blablabla\\index";
+    String indexPath = "index";
     IndexReader ir;
     int numOfImagesReturned = 1;
 
@@ -43,18 +46,18 @@ public class BrowseScene {
     @FXML
     public void initialize() throws IOException {
         // TODO: Should comment out
-//        try {
-//            ir = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            ir = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //initialize the spinner to provide choices in the range of 1 - 30
         docIdSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,30));
         //define the default number of images returned
         docIdSpinner.getValueFactory().setValue(numOfImagesReturned);
 
-        displayImage(1);
+        displayImage(0);
     }
 
     @FXML

@@ -36,7 +36,7 @@ import java.util.SortedSet;
 
 
 public class SearchScene {
-    //String indexPath = "D:\\Documents\\blablabla\\index";
+    String indexPath = "index";
     IndexReader ir;
 
     //initialize the required value
@@ -98,11 +98,11 @@ public class SearchScene {
     public void initialize(){
 
         // TODO: Should comment out
-        /*try {
+        try {
             ir = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
 
         //initialize the choice box for index searcher
         indexSearchChoice.getItems().add(0, "Opponent Histogram");

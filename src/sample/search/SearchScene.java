@@ -112,18 +112,6 @@ public class SearchScene {
 
         //define the default index searcher
         indexSearchChoice.getSelectionModel().select(0);
-        //indexSearcherType = "Opponent Histogram";
-
-//        //initialize the choice box for ranking features
-//        rankingChoice.getItems().add(0, "Opponent Histogram");
-//        rankingChoice.getItems().add(1, "PHOG");
-//        rankingChoice.getItems().add(2, "ACCID");
-//        rankingChoice.getItems().add(3, "Tamura");
-//
-//        //define the default value of ranking features
-//        rankingChoice.getSelectionModel().select(0);
-//        //rankingType = "Opponent Histogram";
-
         //initialize the spinner to provide choices in the range of 1 - 30
         numberOfImageSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,30));
         //define the default number of images returned
@@ -326,7 +314,6 @@ public class SearchScene {
         // Display all images to GUI.
         // Display all the paths of similar images and their distance with the query image (sorted in asc)
         similarImages.forEach((entry) -> {
-            System.out.println("Image File Path: " + entry.getKey() + "; Distance: " + entry.getValue());
 
             try {
 

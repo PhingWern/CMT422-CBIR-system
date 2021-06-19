@@ -53,7 +53,7 @@ public class BrowseScene {
         }
 
         //initialize the spinner to provide choices in the range of 1 - 30
-        docIdSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,30));
+        docIdSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,ir.maxDoc()));
         //define the default number of images returned
         docIdSpinner.getValueFactory().setValue(numOfImagesReturned);
 

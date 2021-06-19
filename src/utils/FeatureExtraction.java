@@ -48,7 +48,6 @@ public class FeatureExtraction {
             String imageFilePath = it.next();
             try{
                 BufferedImage bufferedImage = ImageIO.read(new FileInputStream(imageFilePath));
-                System.out.println(imageFilePath);
                 Document document = globalDocumentBuilder.createDocument(bufferedImage,imageFilePath);
                 writer.addDocument(document);
             }catch (Exception e){

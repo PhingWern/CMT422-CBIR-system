@@ -40,6 +40,7 @@ public class IndexScene {
 
     @FXML
     private void redirectToMainMenu(ActionEvent actionEvent) throws IOException {
+
         Parent root = FXMLLoader.load(getClass().getResource("../main/mainScene.fxml"));
         Stage currentStage = (Stage) mainMenuBTN.getScene().getWindow();
         currentStage.setTitle("CMT422 - CBIR System");
@@ -71,27 +72,41 @@ public class IndexScene {
             imageDirPath.clear();
             imageDirPath.appendText(selectedFile.getPath());
             indexBTN.setDisable(false);
+            indexBTN.setDefaultButton(true);
         }
     }
 
     public void addProgressBar(){
-        indexProgress.setProgress(0.0);
-        indexProgress.setMaxWidth(Double.MAX_VALUE);
-        indexProgress.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setValignment(indexProgress, VPos.CENTER);
-        GridPane.setHalignment(indexProgress, HPos.CENTER);
-        GridPane.setMargin(indexProgress, new Insets(20,5,20,5));
-        contentGrid.add(indexProgress, 1, 5, 3, 1);
+
+        if(contentGrid.getChildren().contains(indexProgress)){
+            indexProgress.setProgress(0.0);
+        }
+        else{
+            indexProgress.setProgress(0.0);
+            indexProgress.setMaxWidth(Double.MAX_VALUE);
+            indexProgress.setMaxHeight(Double.MAX_VALUE);
+            GridPane.setValignment(indexProgress, VPos.CENTER);
+            GridPane.setHalignment(indexProgress, HPos.CENTER);
+            GridPane.setMargin(indexProgress, new Insets(20,5,20,5));
+            contentGrid.add(indexProgress, 1, 5, 3, 1);
+        }
+
     }
 
     public void addIndexLabel(){
-        indexLabel.setText(" Starting ... ");
-        indexLabel.fontProperty().setValue(new Font(18));
-        indexLabel.setMaxWidth(Double.MAX_VALUE);
-        indexLabel.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setValignment(indexLabel, VPos.TOP);
-        GridPane.setHalignment(indexLabel, HPos.CENTER);
-        GridPane.setMargin(indexLabel, new Insets(20,10,20,10));
-        contentGrid.add(indexLabel, 1, 6, 3, 1);
+        if(contentGrid.getChildren().contains(indexLabel)){
+            indexLabel.setText(" Starting ... ");
+        }
+        else{
+            indexLabel.setText(" Starting ... ");
+            indexLabel.fontProperty().setValue(new Font(18));
+            indexLabel.setMaxWidth(Double.MAX_VALUE);
+            indexLabel.setMaxHeight(Double.MAX_VALUE);
+            GridPane.setValignment(indexLabel, VPos.TOP);
+            GridPane.setHalignment(indexLabel, HPos.CENTER);
+            GridPane.setMargin(indexLabel, new Insets(20,10,20,10));
+            contentGrid.add(indexLabel, 1, 6, 3, 1);
+        }
+
     }
 }

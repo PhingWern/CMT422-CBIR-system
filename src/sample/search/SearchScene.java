@@ -1,7 +1,9 @@
 package sample.search;
 
+import com.sun.prism.Image;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -9,10 +11,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import net.semanticmetadata.lire.imageanalysis.features.global.ACCID;
 import net.semanticmetadata.lire.imageanalysis.features.global.OpponentHistogram;
@@ -255,9 +261,64 @@ public class SearchScene {
 
         imgView.setImage(SwingFXUtils.toFXImage(image, null));
         final HBox pictureRegion = new HBox();
+        final Button pictureButton = new Button();
         pictureRegion.alignmentProperty().setValue(Pos.CENTER);
         pictureRegion.setPadding(new Insets(30));
-        pictureRegion.getChildren().add(imgView);
+
+        final ContextMenu contextMenu = new ContextMenu();
+        MenuItem view = new MenuItem("View image");
+        view.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Stage currentStage = (Stage) searchBTN.getScene().getWindow();
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(currentStage);
+                dialog.setTitle(filePath);
+                VBox dialogVbox = new VBox(80);
+                ImageView imgView = new ImageView();
+                imgView.setImage(SwingFXUtils.toFXImage(image, null));
+                dialogVbox.getChildren().add(new ScrollPane(imgView));
+                Scene dialogScene = new Scene(dialogVbox);
+                dialog.setScene(dialogScene);
+                dialog.show();
+            }
+        });
+        MenuItem search = new MenuItem("Search by image");
+        search.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                SortedSet<Map.Entry<String, Double>> similarImages = null;
+                try {
+                    similarImages = getSimilarImages(image);
+                    displayImageInGrid(similarImages);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        contextMenu.getItems().addAll(view, search);
+        pictureButton.setContextMenu(contextMenu);
+        pictureButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getButton().equals(MouseButton.PRIMARY)){
+
+                    if(event.getClickCount() == 2){
+                        SortedSet<Map.Entry<String, Double>> similarImages = null;
+                        try {
+                            similarImages = getSimilarImages(image);
+                            displayImageInGrid(similarImages);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+
+        pictureButton.setGraphic(imgView);
+        pictureRegion.getChildren().add(pictureButton);
 
         return pictureRegion;
     }

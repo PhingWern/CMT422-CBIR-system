@@ -72,7 +72,7 @@ public class FeatureExtraction implements Runnable{
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            IndexScene.indexLabel.setText(" Indexing images ... ( " + finalI + "/" + images.size() + " )");
+                            IndexScene.indexLabel.setText(" Indexing images ... ( " + finalI + " / " + images.size() + " )");
                         }
                     });
                 }catch (Exception e){

@@ -80,7 +80,7 @@ public class BrowseScene {
     }
 
     /**
-     * hen menu button clicked
+     * when menu button clicked
      * return to the main menu
      * @param actionEvent
      * @throws IOException

@@ -59,6 +59,7 @@ public class SearchScene {
 
     /*************
      *   main menu
+     *   mainMenuBTN - main menu button to go back to main menu
      * ************/
     @FXML
     Button mainMenuBTN;
@@ -102,11 +103,11 @@ public class SearchScene {
      *   functions
      * *****************/
 
-    @FXML
     /**
      * run when the Search Scene Controller is loaded.
      * to initialize the index reader, setup the indexSearchChoice and numberOfImageSpinner
      */
+    @FXML
     public void initialize(){
 
         try {

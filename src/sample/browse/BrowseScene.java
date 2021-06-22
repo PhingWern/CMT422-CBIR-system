@@ -27,13 +27,25 @@ import java.net.URL;
 import java.nio.file.Paths;
 
 public class BrowseScene {
+    //declare the index path
     String indexPath = "index";
+    //declare the index reader
     IndexReader ir;
-    int numOfImagesReturned = 1;
 
+    /*************
+     *   main menu
+     *   mainMenuBTN - main menu button to go back to main menu
+     * ************/
     @FXML
     Button mainMenuBTN;
 
+    /*******************
+     *   browse control
+     *
+     *   ImageBrowsed - image browsed by user (image with id -> value of docIdSpinner - 1 )
+     *   docIdSpinner - Spinner that display the index id + 1
+     *   browseGrid - grid that display image
+     * *****************/
     @FXML
     ImageView ImageBrowsed;
 
@@ -43,81 +55,99 @@ public class BrowseScene {
     @FXML
     GridPane browseGrid;
 
+    /**
+     * run when the Browse Scene Controller is loaded.
+     * to initialize the index reader, setup the docIdSpinner and the displayed image
+     * @throws IOException
+     */
     @FXML
     public void initialize() throws IOException {
-        // TODO: Should comment out
+
         try {
+            //get the index reader through the image path
             ir = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         } catch (IOException e) {
+            //if encountering any error, print it in the console
             e.printStackTrace();
         }
 
         //initialize the spinner to provide choices in the range of 1 - 30
         docIdSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,ir.maxDoc()));
         //define the default number of images returned
-        docIdSpinner.getValueFactory().setValue(numOfImagesReturned);
-
+        docIdSpinner.getValueFactory().setValue(1);
+        //display the first image
         displayImage(0);
     }
 
+    /**
+     * hen menu button clicked
+     * return to the main menu
+     * @param actionEvent
+     * @throws IOException
+     */
     @FXML
     private void redirectToMainMenu(ActionEvent actionEvent) throws IOException {
+        // get the fxml and controller of the main scene
         Parent root = FXMLLoader.load(getClass().getResource("../main/mainScene.fxml"));
+        // get current stage by using mainMenuBTN in current Scene
         Stage currentStage = (Stage) mainMenuBTN.getScene().getWindow();
+        // set the title of the scene
         currentStage.setTitle("CMT422 - CBIR System");
+        // set the new scene to the current stage
         currentStage.setScene(new Scene(root));
+        // show the stage
         currentStage.show();
     }
 
     @FXML
     private void onClickSearch(ActionEvent actionEvent) throws Exception {
 
-        // TODO: implement change scene from browse to search
-        // *** Determine a document index (from 0 to n-1)
-        //int docId = 0;
+        // Determine a document index (from 0 to n-1)
+        // get the document Id
         int docId = ((Integer) docIdSpinner.getValue()).intValue() - 1;
 
-        //Load second scene
+        //Load search scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../search/searchScene.fxml"));
         Parent root = loader.load();
 
-        //Get controller of scene2
+        //Get controller of search scene
         SearchScene searchController = loader.getController();
-        //Pass to search
+        //Pass the docId to search scene
         searchController.setImageId(docId);
 
         //Show search scene in new window
         Stage currentStage = (Stage) mainMenuBTN.getScene().getWindow();
+        //set the title of next stage
         currentStage.setTitle("CMT422 - CBIR System/Search");
+        //set the scene to the stage
         currentStage.setScene(new Scene(root));
+        //show the stage
         currentStage.show();
 
-        /*FeatureSimilarity fs = new FeatureSimilarity();
-        // Parameters for findSimilarImages: num of similar images to return, type of feature, document index to query, IndexReader obj
-        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, OpponentHistogram.class, docId, ir);
-//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, PHOG.class, docId, ir);
-//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, ACCID.class, docId, ir);
-//        SortedSet<Map.Entry<String, Double>> similarImages = fs.findSimilarImagesByDoc(numOfImagesReturned, Tamura.class, docId, ir);
-
-        // TODO: Display all images to GUI.
-        // Display all the paths of similar images and their distance with the query image (sorted in asc)
-        similarImages.forEach((entry) -> {
-            System.out.println("Image File Path: " + entry.getKey() + "; Distance: " + entry.getValue());
-
-
-        });*/
     }
 
+    /**
+     * triggered when the value of spinner change
+     * @throws IOException
+     */
     @FXML
     private void onSpinnerChange() throws IOException {
+        //get the new docId
         int docID = ((Integer) docIdSpinner.getValue()).intValue() - 1;
 
+        //check id the docId is valid
         if (!(docID < 0 || docID > ir.maxDoc())) {
+            //if valid, then display the image
             displayImage(docID);
         } else {
+            //if not valid
             if (docID < 0) {
+                //if docId less than 0
+                //set the value of spinner to 1
                 docIdSpinner.getValueFactory().setValue(1);
             } else {
+                //if docID more than 0 and number of maximum document
+                //set the value to the number of maximum document
                 docIdSpinner.getValueFactory().setValue(ir.maxDoc());
             }
         }
@@ -130,25 +160,35 @@ public class BrowseScene {
      * @throws IOException
      */
     private void displayImage(int docId) throws IOException {
-        // TODO: search doc by id and display image
+
         try {
-            //TODO: Dunno can work or not, need to be test after indexing module is implemented
+            //read the document from index using docId
             Document d = ir.document(docId);
+            //declare an empty bufferedImage
             BufferedImage img = null;
+            //get the file path of the document
             String file = d.getField(DocumentBuilder.FIELD_NAME_IDENTIFIER).stringValue();
+            //if the file is not a url
             if (!file.startsWith("http:")) {
+                //read from local directory
                 img = ImageIO.read(new java.io.FileInputStream(file));
             } else {
+                //read from url
                 img = ImageIO.read(new URL(file));
             }
 
+            // create a writableImage
             WritableImage i = SwingFXUtils.toFXImage(img, null);
 
+            //set the height of the imageBrowsed
             ImageBrowsed.fitHeightProperty().bind(browseGrid.heightProperty().multiply(0.9));
+            //set the width of the imageBrowsed
             ImageBrowsed.fitWidthProperty().bind(browseGrid.widthProperty());
+            //set the image to the ImageBrowsed (will be displayed in the GUI)
             ImageBrowsed.setImage(i);
 
         } catch (Exception e) {
+            //if any error occurs, print the error to the console.
             System.err.println(e.toString());
         }
     }

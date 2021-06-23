@@ -113,7 +113,17 @@ public class SearchScene {
         try {
             //get the index reader through the image path
             ir = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
+
         } catch (IOException e) {
+            //if the file is not existing in the directory
+            //create a new alert
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            //set alert title
+            alert.setTitle("Error");
+            //set the alert message
+            alert.setContentText("Error reading the index! You may need to do indexing first. \n\n" + e.getMessage());
+            //display the alert dialog
+            alert.show();
             //if encountering any error, print it in the console
             e.printStackTrace();
         }
@@ -445,9 +455,11 @@ public class SearchScene {
         else if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 2)
             //perform similarity matching with ACCID Index Searcher
             return fs.findSimilarImages(numOfImagesReturned, ACCID.class, img, ir);
-        else
+        else if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 3)
             //perform similarity matching with Tamura Index Searcher
             return fs.findSimilarImages(numOfImagesReturned, Tamura.class, img, ir);
+
+        return null;
     }
 
     /**
@@ -470,9 +482,11 @@ public class SearchScene {
         else if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 2)
             //perform similarity matching with ACCID Index Searcher
             return fs.findSimilarImagesByDoc(numOfImagesReturned, ACCID.class, docId, ir);
-        else
+        else if (indexSearchChoice.getSelectionModel().getSelectedIndex() == 3)
             //perform similarity matching with Tamura Index Searcher
             return fs.findSimilarImagesByDoc(numOfImagesReturned, Tamura.class, docId, ir);
+
+        return null;
 
     }
     private void displayImageInGrid(SortedSet<Map.Entry<String, Double>> similarImages){

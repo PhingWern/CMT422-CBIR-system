@@ -56,7 +56,7 @@ public class IndexScene {
     @FXML
     private void redirectToMainMenu(ActionEvent actionEvent) throws IOException {
         // get the fxml and controller of the main scene
-        Parent root = FXMLLoader.load(getClass().getResource("/sample/main/mainScene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../main/mainScene.fxml"));
         // get current stage by using mainMenuBTN in current Scene
         Stage currentStage = (Stage) mainMenuBTN.getScene().getWindow();
         // set the title of the scene

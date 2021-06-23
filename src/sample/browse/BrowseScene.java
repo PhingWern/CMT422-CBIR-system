@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -28,7 +29,7 @@ import java.nio.file.Paths;
 
 public class BrowseScene {
     //declare the index path
-    String indexPath = "index";
+    String indexPath = "./index";
     //declare the index reader
     IndexReader ir;
 
@@ -66,17 +67,28 @@ public class BrowseScene {
         try {
             //get the index reader through the image path
             ir = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
+
+            //initialize the spinner to provide choices in the range of 1 - 30
+            docIdSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,ir.maxDoc()));
+            //define the default number of images returned
+            docIdSpinner.getValueFactory().setValue(1);
+            //display the first image
+            displayImage(0);
+
         } catch (IOException e) {
+            //if the file is not existing in the directory
+            //create a new alert
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            //set alert title
+            alert.setTitle("Error");
+            //set the alert message
+            alert.setContentText("Error reading the index! You may need to do indexing first. \n\n" + e.getMessage());
+            //display the alert dialog
+            alert.show();
             //if encountering any error, print it in the console
             e.printStackTrace();
         }
 
-        //initialize the spinner to provide choices in the range of 1 - 30
-        docIdSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,ir.maxDoc()));
-        //define the default number of images returned
-        docIdSpinner.getValueFactory().setValue(1);
-        //display the first image
-        displayImage(0);
     }
 
     /**
@@ -88,7 +100,7 @@ public class BrowseScene {
     @FXML
     private void redirectToMainMenu(ActionEvent actionEvent) throws IOException {
         // get the fxml and controller of the main scene
-        Parent root = FXMLLoader.load(getClass().getResource("../main/mainScene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/sample/main/mainScene.fxml"));
         // get current stage by using mainMenuBTN in current Scene
         Stage currentStage = (Stage) mainMenuBTN.getScene().getWindow();
         // set the title of the scene
@@ -107,7 +119,7 @@ public class BrowseScene {
         int docId = ((Integer) docIdSpinner.getValue()).intValue() - 1;
 
         //Load search scene
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../search/searchScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/search/searchScene.fxml"));
         Parent root = loader.load();
 
         //Get controller of search scene

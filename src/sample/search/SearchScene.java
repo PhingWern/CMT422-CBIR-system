@@ -43,7 +43,7 @@ import java.util.SortedSet;
 
 public class SearchScene {
     //declare the index path
-    String indexPath = "index";
+    String indexPath = "./index";
     //declare the index reader
     IndexReader ir;
 
@@ -114,6 +114,16 @@ public class SearchScene {
             //get the index reader through the image path
             ir = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
         } catch (IOException e) {
+            //if the file is not existing in the directory
+            //create a new alert
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            //set alert title
+            alert.setTitle("Error");
+            //set the alert message
+            alert.setContentText("Error reading the index! You may need to do indexing first. \n\n" + e.getMessage());
+            //display the alert dialog
+            alert.show();
+            //if encountering any error, print it in the console
             //if encountering any error, print it in the console
             e.printStackTrace();
         }
@@ -168,7 +178,7 @@ public class SearchScene {
     @FXML
     private void redirectToMainMenu(ActionEvent actionEvent) throws IOException {
         // get the fxml and controller of the main scene
-        Parent root = FXMLLoader.load(getClass().getResource("../main/mainScene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/sample/main/mainScene.fxml"));
         // get current stage by using mainMenuBTN in current Scene
         Stage currentStage = (Stage) mainMenuBTN.getScene().getWindow();
         // set the title of the scene

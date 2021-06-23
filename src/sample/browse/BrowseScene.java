@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -66,17 +67,27 @@ public class BrowseScene {
         try {
             //get the index reader through the image path
             ir = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
+            //initialize the spinner to provide choices in the range of 1 - 30
+            docIdSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,ir.maxDoc()));
+            //define the default number of images returned
+            docIdSpinner.getValueFactory().setValue(1);
+            //display the first image
+            displayImage(0);
         } catch (IOException e) {
+            //if the file is not existing in the directory
+            //create a new alert
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            //set alert title
+            alert.setTitle("Error");
+            //set the alert message
+            alert.setContentText("Error reading the index! You may need to do indexing first. \n\n" + e.getMessage());
+            //display the alert dialog
+            alert.show();
             //if encountering any error, print it in the console
             e.printStackTrace();
         }
 
-        //initialize the spinner to provide choices in the range of 1 - 30
-        docIdSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,ir.maxDoc()));
-        //define the default number of images returned
-        docIdSpinner.getValueFactory().setValue(1);
-        //display the first image
-        displayImage(0);
+
     }
 
     /**

@@ -15,13 +15,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.lucene.store.Directory;
 import utils.FeatureExtraction;
-//import utils.FeatureExtraction;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 

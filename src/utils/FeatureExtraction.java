@@ -19,9 +19,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-// implements Runnable to enable the class to run in thread
 public class FeatureExtraction implements Runnable{
-
+    // implements Runnable to enable the class to run in thread
     // declare the path
     private String path;
 

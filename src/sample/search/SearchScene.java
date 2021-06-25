@@ -48,7 +48,7 @@ public class SearchScene {
     IndexReader ir;
 
     //initialize the required value
-    int numOfImagesReturned = 9;
+    int numOfImagesReturned = 10;
 
     //row and column variables used for display image in gridpane
     int currentRow = 0;
@@ -141,7 +141,7 @@ public class SearchScene {
         //define the default index searcher
         indexSearchChoice.getSelectionModel().select(0);
         //initialize the spinner to provide choices in the range of 1 - 30, maximum number of images to display is 30
-        numberOfImageSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(9,30));
+        numberOfImageSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(10,30));
         //define the default number of images returned
         numberOfImageSpinner.getValueFactory().setValue(numOfImagesReturned);
 
@@ -215,6 +215,15 @@ public class SearchScene {
                 //display the images in grid pane
                 displayImageInGrid(similarImages);
             } catch (IOException e) {
+                //if any error occurs in getSimilarImage
+                //create a new alert
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                //set alert title
+                alert.setTitle("Error");
+                //set the alert message
+                alert.setContentText("An error occurs. \n\n" + e.getMessage());
+                //display the alert dialog
+                alert.show();
                 //if encountering any error, print it in the console
                 e.printStackTrace();
             }
@@ -362,12 +371,17 @@ public class SearchScene {
                 dialog.setTitle(filePath);
                 //create a new Vbox
                 VBox dialogVbox = new VBox(80);
+                //Pane dialogPane = new Pane();
                 //create a new ImageView
                 ImageView imgView = new ImageView();
                 //set the image to the imageView
                 imgView.setImage(SwingFXUtils.toFXImage(image, null));
+                imgView.setPreserveRatio(true);
+                imgView.fitHeightProperty().bind(dialog.heightProperty().subtract(40));
+                imgView.fitWidthProperty().bind(dialog.widthProperty().subtract(20));
                 //insert the imageView to the Vbox
-                dialogVbox.getChildren().add(new ScrollPane(imgView));
+                dialogVbox.getChildren().add(imgView);
+                //dialogPane.getChildren().add(imgView);
                 //insert the Vbox to the new dialog scene
                 Scene dialogScene = new Scene(dialogVbox);
                 //insert the dialog scene to the dialog Stage
